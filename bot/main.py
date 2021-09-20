@@ -5,7 +5,8 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils import executor
 
 from bot.config import BOT_TOKEN
-from bot.handlers import start, setup_handlers
+from bot.events import on_startup
+from bot.handlers import setup_handlers
 
 logging.basicConfig(level=logging.INFO)
 
@@ -26,4 +27,4 @@ def create_bot():
 
 
 dp = create_bot()
-executor.start_polling(dp, skip_updates=True)
+executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
