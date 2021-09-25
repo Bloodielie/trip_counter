@@ -10,8 +10,8 @@ from bot.trip.models import Trip, trips_users
 from bot.user.models import User
 
 
-def get_travel_cost(auto: Auto, distance: float) -> float:
-    return (auto.consumption / (100 / distance) * auto.fuel_price) * auto.multiplier
+def get_travel_cost(auto_consumption: float, auto_fuel_price: float, auto_multiplier: float, distance: float) -> float:
+    return (auto_consumption / (100 / distance) * auto_fuel_price) * auto_multiplier
 
 
 async def get_user_trips(session: AsyncSession, user: User, limit: int = 50) -> List[TripInfo]:

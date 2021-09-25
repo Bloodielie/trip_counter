@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Filter
 from aiogram.dispatcher.handler import ctx_data
 
-from bot.core import text
+from bot.shared import text
 from bot.user.models import Permissions
 
 

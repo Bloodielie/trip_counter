@@ -6,10 +6,10 @@ from bot.core.db import Base
 from bot.user.models import User
 
 trips_users = Table(
-    'trips_users',
+    "trips_users",
     Base.metadata,
-    Column('user', ForeignKey('users.id'), primary_key=True),
-    Column('trip', ForeignKey('trips.id'), primary_key=True)
+    Column("user", ForeignKey("users.id"), primary_key=True),
+    Column("trip", ForeignKey("trips.id"), primary_key=True),
 )
 
 

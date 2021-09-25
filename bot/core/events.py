@@ -5,8 +5,15 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.auto.models import Auto
-from bot.core.config import DEBUG, ADMIN_TELEGRAM_ID, ADMIN_NAME, AUTO_1_IDENTIFIER, AUTO_1_FUEL_PRICE, \
-    AUTO_1_CONSUMPTION, AUTO_1_MULTIPlIER
+from bot.core.config import (
+    DEBUG,
+    ADMIN_TELEGRAM_ID,
+    ADMIN_NAME,
+    AUTO_1_IDENTIFIER,
+    AUTO_1_FUEL_PRICE,
+    AUTO_1_CONSUMPTION,
+    AUTO_1_MULTIPlIER,
+)
 from bot.core.db import engine, Base, async_session
 from bot.user.models import User, Permissions
 
@@ -31,7 +38,7 @@ async def create_autos(session: AsyncSession) -> None:
                 fuel_price=AUTO_1_FUEL_PRICE,
                 consumption=AUTO_1_CONSUMPTION,
                 multiplier=AUTO_1_MULTIPlIER,
-                identifier=AUTO_1_IDENTIFIER
+                identifier=AUTO_1_IDENTIFIER,
             )
         )
 
