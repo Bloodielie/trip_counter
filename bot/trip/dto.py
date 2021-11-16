@@ -1,5 +1,7 @@
 import datetime
 from dataclasses import dataclass
+from decimal import Decimal
+from typing import List
 
 
 @dataclass
@@ -10,4 +12,12 @@ class TripInfo:
     date: datetime.datetime
     auto_identifier: str
     creator_name: str
-    number_of_passengers: int
+    passengers: List[str]
+
+
+@dataclass
+class AutoParams:
+    id: int
+    multiplier: float
+    consumption: float
+    price: Decimal

@@ -1,0 +1,36 @@
+{
+    "419122895": {
+        "419122895": {
+            "state": "States.HistoryStates:get_history",
+            "data": {
+                "distance": 12.0,
+                "autos": [
+                    "Peugeot 307"
+                ],
+                "selected_auto": "Peugeot 307",
+                "users_names": [
+                    "\u0420\u043e\u043c\u0430",
+                    "Test",
+                    "Test2"
+                ],
+                "selected_users_names": [
+                    "\u0420\u043e\u043c\u0430"
+                ],
+                "passengers_identifiers": [
+                    "Test",
+                    "Test2"
+                ],
+                "selected_passengers": [
+                    "Test2"
+                ],
+                "users_name": [
+                    "Test",
+                    "Test2",
+                    "\u0420\u043e\u043c\u0430"
+                ],
+                "select_user": "\u0420\u043e\u043c\u0430"
+            },
+            "bucket": {}
+        }
+    }
+}

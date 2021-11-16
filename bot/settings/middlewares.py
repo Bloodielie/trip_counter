@@ -21,8 +21,11 @@ class AddUserMiddleware(BaseMiddleware):
 
         self._session = session
 
-    async def on_pre_process_message(self, msg: types.Message, data: dict):
-        async with self._session() as async_session:
-            user = await get_user_by_tg_id(async_session, msg.from_user.id)
+    async def trigger(self, action, args):
+        if isinstance(args[0], types.Message) or isinstance(args[0], types.CallbackQuery):
+            user_id = args[0].from_user.id
+            async with self._session() as async_session:
+                user = await get_user_by_tg_id(async_session, user_id)
+            args[-1].update({"user": user})
 
-        data["user"] = user
+        return await super().trigger(action, args)

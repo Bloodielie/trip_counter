@@ -2,3 +2,4 @@ aiogram~=2.15.0
 python-dotenv
 sqlalchemy[asyncio]
 aiosqlite
+asyncpg

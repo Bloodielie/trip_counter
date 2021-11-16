@@ -7,7 +7,6 @@ from bot.trip.handlers import (
     get_distance,
     select_auto,
     select_users,
-    select_auto_back,
     select_users_back,
     complete_select_users,
     cancel_add_trip,
@@ -18,6 +17,7 @@ from bot.user.models import Permissions
 
 
 def setup_commands_routs(dp: Dispatcher) -> None:
+    # create_trip
     dp.register_message_handler(
         start_creating_trip,
         PermissionFilter([Permissions.ADMIN, Permissions.SUPER_ADMIN]),
@@ -27,12 +27,13 @@ def setup_commands_routs(dp: Dispatcher) -> None:
 
 
 def setup_routs(dp: Dispatcher) -> None:
+    # create_trip
     dp.register_message_handler(
         get_distance, PermissionFilter([Permissions.ADMIN, Permissions.SUPER_ADMIN]), state=TripStates.input_distance
     )
 
     dp.register_message_handler(
-        select_auto_back,
+        start_creating_trip,
         PermissionFilter([Permissions.ADMIN, Permissions.SUPER_ADMIN]),
         text=[text.BACK],
         state=TripStates.select_auto,

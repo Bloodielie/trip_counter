@@ -1,14 +1,14 @@
 import logging
 
 from aiogram import Bot, Dispatcher
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.contrib.fsm_storage.files import JSONStorage
 from aiogram.utils import executor
 
-from bot.core.config import BOT_TOKEN
-from bot.core.db import async_session
-from bot.core.events import on_startup
-from bot.core.middlewares import InjectMiddleware, AddUserMiddleware
-from bot.core.routs import setup_routes
+from bot.settings.config import BOT_TOKEN, PATH_TO_STATES
+from bot.settings.db import async_session
+from bot.settings.events import on_startup
+from bot.settings.middlewares import InjectMiddleware, AddUserMiddleware
+from bot.settings.routs import setup_routes
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,7 +21,7 @@ def setup_middlewares(dp: Dispatcher) -> None:
 def create_dp() -> Dispatcher:
     bot = Bot(token=BOT_TOKEN, parse_mode="Markdown")
 
-    storage = MemoryStorage()
+    storage = JSONStorage(PATH_TO_STATES)
     dp = Dispatcher(bot, storage=storage)
 
     setup_middlewares(dp)
