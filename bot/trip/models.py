@@ -2,12 +2,12 @@ from sqlalchemy import Column, Integer, DateTime, Table, ForeignKey, Float, Stri
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from bot.settings.db import Base
+from bot.settings.db import Base, metadata
 from bot.user.models import User
 
 trips_users = Table(
     "trips_users",
-    Base.metadata,
+    metadata,
     Column("passenger", Integer, ForeignKey("users.id")),
     Column("trip", Integer, ForeignKey("trips.id")),
     PrimaryKeyConstraint('passenger', 'trip')

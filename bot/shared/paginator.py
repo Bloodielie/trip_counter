@@ -13,17 +13,19 @@ T = TypeVar("T")
 
 GetDataFuncType = Callable[[AsyncSession, User, int, int], Awaitable[T]]
 FormattingFuncType = Callable[[User, List[T]], str]
+GetKeyboardFuncType = Callable[["CallBackData", "CallBackData"], types.InlineKeyboardMarkup]
 
 
 @dataclass(frozen=True)
 class CallBackData:
     id: str
     offset: int
+    max_id: int
 
 
 def get_pagination_keyboard(
     previous_callback_data: CallBackData, next_callback_data: CallBackData
-):
+) -> types.InlineKeyboardMarkup:
     return (
         types.InlineKeyboardMarkup()
         .row(
@@ -37,19 +39,21 @@ class Paginator:
     def __init__(
         self,
         id_: str,
-        get_data_func: GetDataFuncType,
-        formatting_func: FormattingFuncType,
         no_data_text: str,
         cursor_at_begin_text: str,
         cursor_at_end_text: str,
-        content_amount_on_page: int = 3
+        content_amount_on_page: int,
+        get_data_func: GetDataFuncType,
+        formatting_func: FormattingFuncType,
+        get_keyboard_func: GetKeyboardFuncType = get_pagination_keyboard
     ):
         self._id = id_
-        self.next_id = f"{id_}_next"
-        self.prev_id = f"{id_}_prev"
+        self.next_id = f"{id_}n"
+        self.prev_id = f"{id_}p"
 
         self._get_data_func = get_data_func
         self._formatting_func = formatting_func
+        self._get_keyboard_func = get_keyboard_func
 
         self._no_data_text = no_data_text
         self._cursor_at_begin_text = cursor_at_begin_text
@@ -84,15 +88,17 @@ class Paginator:
 
     async def message_handler(self, msg: types.Message, user: User, session: sessionmaker):
         async with session() as async_session:
-            elements = await self._get_data_func(async_session, user, self._content_amount_on_page, 0)
+            elements = await self._get_data_func(async_session, user, self._content_amount_on_page, 2147483647)
 
         if not elements:
             return await msg.answer(self._no_data_text)
 
+        offset = elements[0].id
         return await msg.answer(
             self._formatting_func(user, elements),
-            reply_markup=get_pagination_keyboard(
-                CallBackData(id=self.next_id, offset=0), CallBackData(id=self.prev_id, offset=0)
+            reply_markup=self._get_keyboard_func(
+                CallBackData(id=self.prev_id, offset=offset, max_id=offset),
+                CallBackData(id=self.next_id, offset=offset, max_id=offset)
             )
         )
 
@@ -102,17 +108,17 @@ class Paginator:
             return await callback_query.answer(self._no_data_text)
 
         offset = data.offset + self._content_amount_on_page
+        if offset > data.max_id:
+            return await callback_query.answer(self._cursor_at_end_text)
 
         async with session() as async_session:
             elements = await self._get_data_func(async_session, user, self._content_amount_on_page, offset)
 
-        if not elements:
-            return await callback_query.answer(self._cursor_at_begin_text)
-
         await callback_query.message.edit_text(self._formatting_func(user, elements))
         await callback_query.message.edit_reply_markup(
-            get_pagination_keyboard(
-                CallBackData(id=self.next_id, offset=offset), CallBackData(id=self.prev_id, offset=offset)
+            self._get_keyboard_func(
+                CallBackData(id=self.prev_id, offset=offset, max_id=data.max_id),
+                CallBackData(id=self.next_id, offset=offset, max_id=data.max_id)
             )
         )
 
@@ -121,17 +127,17 @@ class Paginator:
         if data is None:
             return await callback_query.answer(self._no_data_text)
 
-        if data.offset == 0:
-            return await callback_query.answer(self._cursor_at_end_text)
-
         offset = data.offset - self._content_amount_on_page
-
         async with session() as async_session:
             elements = await self._get_data_func(async_session, user, self._content_amount_on_page, offset)
 
+        if not elements:
+            return await callback_query.answer(self._cursor_at_begin_text)
+
         await callback_query.message.edit_text(self._formatting_func(user, elements))
         await callback_query.message.edit_reply_markup(
-            get_pagination_keyboard(
-                CallBackData(id=self.next_id, offset=offset), CallBackData(id=self.prev_id, offset=offset)
+            self._get_keyboard_func(
+                CallBackData(id=self.prev_id, offset=offset, max_id=data.max_id),
+                CallBackData(id=self.next_id, offset=offset, max_id=data.max_id)
             )
         )

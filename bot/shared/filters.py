@@ -1,31 +1,37 @@
-from typing import Sequence
+from typing import Sequence, Set
 
 from aiogram import types
 from aiogram.dispatcher.filters import Filter
 from aiogram.dispatcher.handler import ctx_data
 
 from bot.shared import text
-from bot.user.models import Permissions
+from bot.user.models import Role
 
 
-class PermissionFilter(Filter):
-    def __init__(self, permissions: Sequence[Permissions]):
-        self._permissions = permissions
+def check_roles(roles: Sequence[Role], codenames: Set[str]) -> bool:
+    for role in roles:
+        if role.codename in codenames:
+            return True
+
+    return False
+
+
+class RoleFilter(Filter):
+    def __init__(self, roles: Sequence[str]):
+        self._roles = set(roles)
 
     async def check(self, msg: types.Message) -> bool:
         data = ctx_data.get()
-        try:
-            user = data["user"]
-        except KeyError:
-            await msg.answer(text.PERMISSION_ERROR)
-            return False
-
+        user = data.get("user")
         if user is None:
             await msg.answer(text.PERMISSION_ERROR)
             return False
 
-        if user.role in self._permissions:
+        if "*" in self._roles:
             return True
 
-        await msg.answer(text.PERMISSION_ERROR)
-        return False
+        if not check_roles(user.roles, self._roles):
+            await msg.answer(text.PERMISSION_ERROR)
+            return False
+
+        return True

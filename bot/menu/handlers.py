@@ -7,7 +7,7 @@ from bot.shared import text
 import bot.menu.text as menu_text
 from bot.menu.keyboards import menu_keyboard, choice_history_type_keyboard
 from bot.menu.states import States
-from bot.user.models import Permissions, User
+from bot.user.models import User
 
 
 async def start(msg: types.Message) -> None:
@@ -21,7 +21,7 @@ async def bad_menu_input(msg: types.Message):
 
 
 async def menu_user_balance(msg: types.Message, user: User, session: sessionmaker):
-    if user.role != Permissions.SUPER_ADMIN:
+    if "admin" in {role.codename for role in user.roles}:
         async with session() as async_session:
             balance = await get_user_balance(async_session, user.id)
 

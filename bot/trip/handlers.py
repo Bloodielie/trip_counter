@@ -13,7 +13,7 @@ from bot.trip.services.auto import get_user_autos, get_auto_params_by_identifier
 from bot.trip.states import TripStates
 import bot.trip.text as trip_text
 from bot.user.models import User
-from bot.user.services import get_users, get_users_by_identifiers, update_user_balance
+from bot.user.services.user import get_users, get_users_by_identifiers, update_user_balance
 
 
 async def start_creating_trip(msg: types.Message, state: FSMContext):

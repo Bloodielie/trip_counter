@@ -11,7 +11,7 @@ from bot.shared import text
 import bot.balance.text as balance_text
 from bot.menu.keyboards import menu_keyboard
 from bot.menu.states import States
-from bot.user.services import get_users, get_user_by_identifier, update_user_balance
+from bot.user.services.user import get_users, get_user_by_identifier, update_user_balance
 
 
 async def start_adding_balance(msg: types.Message, state: FSMContext, session: sessionmaker):

@@ -1,12 +1,7 @@
-from bot.settings.db import Base
-from sqlalchemy import Column, Integer, String, Enum, Numeric
-from enum import IntEnum
+from sqlalchemy import Column, Integer, String, Numeric, Table, ForeignKey, PrimaryKeyConstraint
+from sqlalchemy.orm import relationship
 
-
-class Permissions(IntEnum):
-    DEFAULT = 1
-    ADMIN = 2
-    SUPER_ADMIN = 3
+from bot.settings.db import metadata, Base
 
 
 class User(Base):
@@ -16,4 +11,21 @@ class User(Base):
     telegram_id = Column(Integer, unique=True, index=True)
     balance = Column(Numeric(precision=15, scale=6, asdecimal=True), default=0)
     identifier = Column(String(250), nullable=True, unique=True, index=True)
-    role = Column(Enum(Permissions), default=Permissions.DEFAULT)
+    roles = relationship("Role", "users_roles")
+
+
+users_roles = Table(
+    "users_roles",
+    metadata,
+    Column("user", Integer, ForeignKey("users.id")),
+    Column("role", Integer, ForeignKey("roles.id")),
+    PrimaryKeyConstraint('user', 'role')
+)
+
+
+class Role(Base):
+    __tablename__ = "roles"
+
+    id = Column(Integer, primary_key=True)
+    codename = Column(String(64), unique=True, nullable=False, index=True)
+    description = Column(String(256), nullable=True)

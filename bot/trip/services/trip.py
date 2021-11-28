@@ -32,12 +32,14 @@ async def get_user_trips(session: AsyncSession, passenger_id: int, limit: int, o
         .join(Auto, Auto.id == Trip.auto)
         .join(User, User.id == Trip.driver)
         .where(
-            Trip.is_deleted == False, or_(trips_users.c.passenger == passenger_id, Trip.driver == passenger_id)
+            Trip.is_deleted == False,
+            Trip.id <= offset,
+            or_(trips_users.c.passenger == passenger_id, Trip.driver == passenger_id)
         )
         .group_by(Trip.id, Auto.identifier, User.identifier)
         .order_by(desc(Trip.id))
         .limit(limit)
-        .offset(offset)
+        # .offset(offset)
     )
     result = await session.execute(get_user_trip_query)
     return result.all()

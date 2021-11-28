@@ -4,13 +4,13 @@ from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.files import JSONStorage
 from aiogram.utils import executor
 
-from bot.settings.config import BOT_TOKEN, PATH_TO_STATES
+from bot.settings.config import BOT_TOKEN, PATH_TO_STATES, DEBUG
 from bot.settings.db import async_session
 from bot.settings.events import on_startup
 from bot.settings.middlewares import InjectMiddleware, AddUserMiddleware
 from bot.settings.routs import setup_routes
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO if not DEBUG else logging.DEBUG)
 
 
 def setup_middlewares(dp: Dispatcher) -> None:

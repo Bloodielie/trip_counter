@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from sqlalchemy.orm import sessionmaker
 
-from bot.user.services import get_user_by_tg_id
+from bot.user.services.user import get_user_by_tg_id
 
 
 class InjectMiddleware(BaseMiddleware):
@@ -25,7 +25,7 @@ class AddUserMiddleware(BaseMiddleware):
         if isinstance(args[0], types.Message) or isinstance(args[0], types.CallbackQuery):
             user_id = args[0].from_user.id
             async with self._session() as async_session:
-                user = await get_user_by_tg_id(async_session, user_id)
+                user = await get_user_by_tg_id(async_session, user_id, True)
             args[-1].update({"user": user})
 
         return await super().trigger(action, args)

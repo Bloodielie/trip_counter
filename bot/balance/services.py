@@ -25,10 +25,14 @@ async def get_user_transactions(
 ) -> List[Transaction]:
     query = (
         select(Transaction)
-        .where(Transaction.is_active == True, or_(Transaction.sender == user.id, Transaction.receiver == user.id))
+        .where(
+            Transaction.is_active == True,
+            Transaction.id <= offset,
+            or_(Transaction.sender == user.id, Transaction.receiver == user.id)
+        )
         .order_by(desc(Transaction.id))
         .limit(limit)
-        .offset(offset)
+        # .offset(offset)
     )
     result = await session.execute(query)
     return result.scalars().all()

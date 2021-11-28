@@ -1,3 +1,4 @@
+from distutils.util import strtobool
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -6,7 +7,7 @@ import os
 load_dotenv()
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-DEBUG = bool(os.environ.get("DEBUG"))
+DEBUG = bool(strtobool(os.environ.get("DEBUG")))
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 PATH_TO_STATES = os.path.join(Path(__file__).parent.parent, "user_states.json")
@@ -20,3 +21,7 @@ AUTO_1_MULTIPlIER = 1.05
 
 DIESEL_IDENTIFIER = "Дизель"
 DIESEL_PRICE = "2.09"
+
+PERMISSION_ADMIN_CODENAME = "admin"
+PERMISSION_DRIVER_CODENAME = "driver"
+PERMISSION_PASSENGER_CODENAME = "passenger"

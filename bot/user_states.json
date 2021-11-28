@@ -1,7 +1,7 @@
 {
     "419122895": {
         "419122895": {
-            "state": "States.HistoryStates:get_history",
+            "state": "States:menu",
             "data": {
                 "distance": 12.0,
                 "autos": [
@@ -24,12 +24,17 @@
                     "Test2"
                 ],
                 "users_name": [
-                    "Test",
-                    "Test2",
                     "\u0420\u043e\u043c\u0430"
                 ],
                 "select_user": "\u0420\u043e\u043c\u0430"
             },
+            "bucket": {}
+        }
+    },
+    "1998881108": {
+        "1998881108": {
+            "state": null,
+            "data": {},
             "bucket": {}
         }
     }

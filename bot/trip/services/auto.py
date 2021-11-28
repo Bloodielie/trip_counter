@@ -30,8 +30,6 @@ async def get_auto_params_by_identifier(session: AsyncSession, identifier: str) 
     if data is None:
         return None
 
-    print(dict(data))
-
     return AutoParams(**dict(data))
 
 
