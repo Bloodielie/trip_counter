@@ -6,7 +6,7 @@ from sqlalchemy import select, desc, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.trip.dto import TripInfo
-from bot.trip.models import Trip, trips_users, Auto
+from bot.trip.models import Trip, trip_passengers, Auto
 from bot.user.models import User
 
 
@@ -28,13 +28,13 @@ async def get_user_trips(session: AsyncSession, passenger_id: int, limit: int, o
             Auto.identifier.label("auto_identifier"),
             User.identifier.label("creator_name"),
         )
-        .join(trips_users, trips_users.c.trip == Trip.id)
+        .join(trip_passengers, trip_passengers.c.trip == Trip.id)
         .join(Auto, Auto.id == Trip.auto)
         .join(User, User.id == Trip.driver)
         .where(
             Trip.is_deleted == False,
             Trip.id <= offset,
-            or_(trips_users.c.passenger == passenger_id, Trip.driver == passenger_id)
+            or_(trip_passengers.c.passenger == passenger_id, Trip.driver == passenger_id)
         )
         .group_by(Trip.id, Auto.identifier, User.identifier)
         .order_by(desc(Trip.id))
@@ -48,8 +48,8 @@ async def get_user_trips(session: AsyncSession, passenger_id: int, limit: int, o
 async def get_users_on_user_trips(session: AsyncSession, trips_id: List[int]) -> List[Tuple[int, str]]:
     query = (
         select(Trip.id, User.identifier)
-        .join(trips_users, Trip.id == trips_users.c.trip)
-        .join(User, User.id == trips_users.c.passenger)
+        .join(trip_passengers, Trip.id == trip_passengers.c.trip)
+        .join(User, User.id == trip_passengers.c.passenger)
         .where(Trip.is_deleted == False, Trip.id.in_(trips_id))
     )
 

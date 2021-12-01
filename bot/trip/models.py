@@ -3,10 +3,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from bot.settings.db import Base, metadata
-from bot.user.models import User
 
-trips_users = Table(
-    "trips_users",
+trip_passengers = Table(
+    "trip_passengers",
     metadata,
     Column("passenger", Integer, ForeignKey("users.id")),
     Column("trip", Integer, ForeignKey("trips.id")),
@@ -18,7 +17,7 @@ class Trip(Base):
     __tablename__ = "trips"
 
     id = Column(Integer, primary_key=True)
-    passengers = relationship(User, secondary=trips_users)
+    passengers = relationship("User", secondary=trip_passengers)
     driver = Column(Integer, ForeignKey("users.id"), unique=False, index=True)
     distance = Column(Float)
     cost = Column(Numeric(precision=15, scale=6, asdecimal=True))
