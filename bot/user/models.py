@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Table, ForeignKey, PrimaryKeyConstraint
+from sqlalchemy import Column, Integer, String, Numeric, Table, ForeignKey, PrimaryKeyConstraint, Boolean
 from sqlalchemy.orm import relationship
 
 from bot.settings.db import metadata, Base
@@ -29,3 +29,13 @@ class Role(Base):
     id = Column(Integer, primary_key=True)
     codename = Column(String(64), unique=True, nullable=False, index=True)
     description = Column(String(256), nullable=True)
+
+
+class Invite(Base):
+    __tablename__ = "invites"
+
+    id = Column(Integer, primary_key=True)
+    creator = Column(Integer, ForeignKey("users.id"))
+    invited = Column(Integer, ForeignKey("users.id"), nullable=True)
+    hash = Column(String(64), nullable=False, index=True)
+    user_identifier = Column(String(32), unique=True)

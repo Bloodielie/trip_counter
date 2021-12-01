@@ -18,7 +18,7 @@ import bot.menu.text as menu_text
 
 
 def setup_commands_routs(dp: Dispatcher) -> None:
-    dp.register_message_handler(start, RoleFilter("*"), commands="start", state="*")
+    dp.register_message_handler(start, commands="start", state="*")
 
 
 def setup_routs(dp: Dispatcher) -> None:
