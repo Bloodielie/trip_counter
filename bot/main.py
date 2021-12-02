@@ -2,6 +2,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.files import JSONStorage
+from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 
 from bot.settings.config import BOT_TOKEN, PATH_TO_STATES, DEBUG
@@ -16,6 +17,7 @@ logging.basicConfig(level=logging.INFO if not DEBUG else logging.DEBUG)
 def setup_middlewares(dp: Dispatcher) -> None:
     dp.setup_middleware(InjectMiddleware({"session": async_session}))
     dp.setup_middleware(AddUserMiddleware(async_session))
+    dp.setup_middleware(LoggingMiddleware("bot"))
 
 
 def create_dp() -> Dispatcher:

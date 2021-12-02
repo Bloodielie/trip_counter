@@ -1,5 +1,4 @@
 from decimal import Decimal
-from pprint import pprint
 from typing import Optional
 
 from aiogram import Dispatcher
@@ -72,11 +71,9 @@ async def create_autos(session: AsyncSession, owner: User) -> None:
 
 
 async def on_startup(_: Dispatcher):
-    pprint(Base.metadata.tables)
-
     async with engine.begin() as conn:
         if DEBUG:
-            await conn.run_sync(Base.metadata.drop_all)
+            # await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
 
     async with async_session.begin() as session:
