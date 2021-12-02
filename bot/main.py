@@ -4,11 +4,9 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.files import JSONStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from aiogram.utils import executor
 
 from bot.settings.config import BOT_TOKEN, PATH_TO_STATES, DEBUG, LIMIT_EVENTS_PER_MIN
 from bot.settings.db import async_session
-from bot.settings.events import on_startup
 from bot.settings.middlewares import InjectMiddleware, AddUserMiddleware, ThrottlingMiddleware
 from bot.settings.routs import setup_routes
 
@@ -34,6 +32,3 @@ def create_dp() -> Dispatcher:
     setup_routes(dp)
 
     return dp
-
-
-executor.start_polling(create_dp(), on_startup=on_startup, skip_updates=True)
