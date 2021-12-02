@@ -12,7 +12,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 
 LIMIT_EVENTS_PER_MIN = 100
 
-PATH_TO_STATES = os.path.join(Path(__file__).parent.parent, "user_states.json")
+PATH_TO_STATES = os.path.join(Path(__file__).parent.parent.parent, "user_states.json")
 
 ADMIN_TELEGRAM_ID = 419122895
 ADMIN_NAME = "Рома"
