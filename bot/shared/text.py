@@ -11,3 +11,5 @@ PERMISSION_ERROR = "Ошибка прав доступа."
 COMPLETE = "Завершить"
 CONFIRM = "Подтвердить"
 CANCEL = "Отменить"
+
+EXCEEDED_LIMIT = "Лимит сообщений в минуту превышен."
