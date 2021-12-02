@@ -27,9 +27,7 @@ def setup_commands_routs(dp: Dispatcher) -> None:
 
 def setup_routs(dp: Dispatcher) -> None:
     # create_trip
-    dp.register_message_handler(
-        get_distance, RoleFilter(["admin", "driver"]), state=TripStates.input_distance
-    )
+    dp.register_message_handler(get_distance, RoleFilter(["admin", "driver"]), state=TripStates.input_distance)
 
     dp.register_message_handler(
         start_creating_trip,
@@ -37,9 +35,7 @@ def setup_routs(dp: Dispatcher) -> None:
         text=[text.BACK],
         state=TripStates.select_auto,
     )
-    dp.register_message_handler(
-        select_auto, RoleFilter(["admin", "driver"]), state=TripStates.select_auto
-    )
+    dp.register_message_handler(select_auto, RoleFilter(["admin", "driver"]), state=TripStates.select_auto)
 
     dp.register_message_handler(
         select_users_back,
@@ -53,9 +49,7 @@ def setup_routs(dp: Dispatcher) -> None:
         text=[text.COMPLETE],
         state=TripStates.select_users,
     )
-    dp.register_message_handler(
-        select_users, RoleFilter(["admin", "driver"]), state=TripStates.select_users
-    )
+    dp.register_message_handler(select_users, RoleFilter(["admin", "driver"]), state=TripStates.select_users)
 
     dp.register_message_handler(
         cancel_add_trip,

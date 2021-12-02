@@ -2,16 +2,21 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from sqlalchemy.orm import sessionmaker
 
+import bot.trip.text as trip_text
 from bot.balance.models import Transaction
-from bot.shared import text
 from bot.menu.keyboards import menu_keyboard
 from bot.menu.states import States
-from bot.trip.keyboards import select_distance_keyboard, confirm_trip_keyboard, get_autos_keyboard, get_choice_users_keyboard
+from bot.shared import text
+from bot.trip.keyboards import (
+    select_distance_keyboard,
+    confirm_trip_keyboard,
+    get_autos_keyboard,
+    get_choice_users_keyboard,
+)
 from bot.trip.models import Trip
-from bot.trip.services.trip import get_travel_cost
 from bot.trip.services.auto import get_user_autos, get_auto_params_by_identifier
+from bot.trip.services.trip import get_travel_cost
 from bot.trip.states import TripStates
-import bot.trip.text as trip_text
 from bot.user.models import User
 from bot.user.services.user import get_users, get_users_by_identifiers, update_user_balance
 
@@ -110,7 +115,7 @@ async def complete_select_users(msg: types.Message, state: FSMContext, user: Use
                 distance=distance,
                 auto=selected_auto,
                 driver=user.identifier,
-                select_users=", ".join(selected_passengers)
+                select_users=", ".join(selected_passengers),
             ),
             parse_mode="Markdown",
             reply_markup=confirm_trip_keyboard,
@@ -134,6 +139,8 @@ async def confirm_add_trip(msg: types.Message, state: FSMContext, user: User, se
     async with session.begin() as async_session:
         selected_users = await get_users_by_identifiers(async_session, selected_passengers)
         auto_params = await get_auto_params_by_identifier(async_session, selected_auto)
+        if auto_params is None:
+            return await msg.answer(trip_text.SELECTED_NON_EXISTENT_AUTO, reply_markup=menu_keyboard)
 
         travel_cost = get_travel_cost(auto_params.consumption, auto_params.price, auto_params.multiplier, distance)
         trip_cost = travel_cost / (len(selected_passengers) + 1)

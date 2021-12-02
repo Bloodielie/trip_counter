@@ -2,7 +2,7 @@ from decimal import Decimal
 from itertools import groupby
 from typing import List, Tuple
 
-from sqlalchemy import select, desc, or_
+from sqlalchemy import select, desc, or_, false
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.trip.dto import TripInfo
@@ -11,11 +11,11 @@ from bot.user.models import User
 
 
 def get_travel_cost(consumption: float, fuel_price: Decimal, multiplier: float, distance: float) -> Decimal:
-    consumption = Decimal(str(consumption))
-    distance = Decimal(str(distance))
-    multiplier = Decimal(str(multiplier))
+    consumption_decimal = Decimal(str(consumption))
+    distance_decimal = Decimal(str(distance))
+    multiplier_decimal = Decimal(str(multiplier))
 
-    return ((consumption / (100 / distance)) * fuel_price) * multiplier
+    return ((consumption_decimal / (100 / distance_decimal)) * fuel_price) * multiplier_decimal
 
 
 async def get_user_trips(session: AsyncSession, passenger_id: int, limit: int, offset: int) -> List[Trip]:
@@ -32,9 +32,9 @@ async def get_user_trips(session: AsyncSession, passenger_id: int, limit: int, o
         .join(Auto, Auto.id == Trip.auto)
         .join(User, User.id == Trip.driver)
         .where(
-            Trip.is_deleted == False,
+            Trip.is_deleted == false(),
             Trip.id <= offset,
-            or_(trip_passengers.c.passenger == passenger_id, Trip.driver == passenger_id)
+            or_(trip_passengers.c.passenger == passenger_id, Trip.driver == passenger_id),
         )
         .group_by(Trip.id, Auto.identifier, User.identifier)
         .order_by(desc(Trip.id))
@@ -50,7 +50,7 @@ async def get_users_on_user_trips(session: AsyncSession, trips_id: List[int]) ->
         select(Trip.id, User.identifier)
         .join(trip_passengers, Trip.id == trip_passengers.c.trip)
         .join(User, User.id == trip_passengers.c.passenger)
-        .where(Trip.is_deleted == False, Trip.id.in_(trips_id))
+        .where(Trip.is_deleted == false(), Trip.id.in_(trips_id))
     )
 
     result = await session.execute(query)
@@ -63,6 +63,6 @@ async def get_user_trips_info(session: AsyncSession, user: User, limit: int, off
 
     users_in_trips = await get_users_on_user_trips(session, list(trips_dict))
     for trip_id, group_items in groupby(users_in_trips, lambda item: item[0]):
-        trips_dict.get(trip_id)["passengers"] = [identifier for _, identifier in group_items]
+        trips_dict.get(trip_id, {})["passengers"] = [identifier for _, identifier in group_items]
 
     return [TripInfo(**trip) for trip in trips_dict.values()]

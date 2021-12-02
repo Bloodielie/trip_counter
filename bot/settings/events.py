@@ -15,14 +15,14 @@ from bot.settings.config import (
     DIESEL_PRICE,
     PERMISSION_ADMIN_CODENAME,
     PERMISSION_DRIVER_CODENAME,
-    PERMISSION_PASSENGER_CODENAME
+    PERMISSION_PASSENGER_CODENAME,
 )
 from bot.settings.db import engine, Base, async_session
-from bot.trip.services.fuel import get_fuel_by_identifier, create_fuel
 from bot.trip.services.auto import get_auto_by_identifier, create_auto
+from bot.trip.services.fuel import get_fuel_by_identifier, create_fuel
 from bot.user.models import User
-from bot.user.services.user import get_user_by_tg_id, create_user
 from bot.user.services.role import get_role_by_codename, create_role, add_role_to_user
+from bot.user.services.user import get_user_by_tg_id, create_user
 
 
 async def create_roles(session: AsyncSession) -> None:
@@ -41,7 +41,7 @@ async def create_roles(session: AsyncSession) -> None:
     await session.flush()
 
 
-async def create_admin(session: AsyncSession) -> Optional[User]:
+async def create_admin(session: AsyncSession) -> User:
     user = await get_user_by_tg_id(session, ADMIN_TELEGRAM_ID)
     if user is None:
         user = await create_user(session, ADMIN_TELEGRAM_ID, ADMIN_NAME)

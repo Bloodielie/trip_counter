@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List, Tuple
 
-from sqlalchemy import select, or_, desc
+from sqlalchemy import select, or_, desc, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.balance.models import Transaction
@@ -26,9 +26,9 @@ async def get_user_transactions(
     query = (
         select(Transaction)
         .where(
-            Transaction.is_active == True,
+            Transaction.is_active == true(),
             Transaction.id <= offset,
-            or_(Transaction.sender == user.id, Transaction.receiver == user.id)
+            or_(Transaction.sender == user.id, Transaction.receiver == user.id),
         )
         .order_by(desc(Transaction.id))
         .limit(limit)

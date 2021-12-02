@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Table, ForeignKey, PrimaryKeyConstraint, Boolean
+from sqlalchemy import Column, Integer, String, Numeric, Table, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 
 from bot.settings.db import metadata, Base
@@ -19,7 +19,7 @@ users_roles = Table(
     metadata,
     Column("user", Integer, ForeignKey("users.id")),
     Column("role", Integer, ForeignKey("roles.id")),
-    PrimaryKeyConstraint('user', 'role')
+    PrimaryKeyConstraint("user", "role"),
 )
 
 

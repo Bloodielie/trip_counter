@@ -1,13 +1,14 @@
-from aiogram import types, Bot
+from typing import Optional
 from uuid import uuid4
 
+from aiogram import types, Bot
 from aiogram.dispatcher import FSMContext
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 from bot.menu.keyboards import menu_keyboard
 from bot.menu.states import States
-from bot.user.models import User
+from bot.user.models import User, Invite
 from bot.user.services.invite import create_invite
 from bot.user.states import CreateInvite
 from bot.user.text import CHOICE_USER_IDENTIFIER, INVITE_INTEGRITY_ERROR
@@ -24,6 +25,7 @@ async def create_invite_(msg: types.Message, user: User, session: sessionmaker, 
     bot_username = (await Bot.get_current().me).username
     link = f"https://t.me/{bot_username}?start={hash}"
 
+    invite: Optional[Invite]
     try:
         async with session.begin() as async_session:
             invite = await create_invite(async_session, user.id, hash, user_identifier)

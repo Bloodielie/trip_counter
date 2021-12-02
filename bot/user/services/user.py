@@ -37,9 +37,7 @@ async def update_user_balance(session: AsyncSession, user_id: int, amount: Decim
     await session.execute(query)
 
 
-async def create_user(
-    session: AsyncSession, telegram_id: int, identifier: str, balance: Decimal = Decimal(0)
-) -> User:
+async def create_user(session: AsyncSession, telegram_id: int, identifier: str, balance: Decimal = Decimal(0)) -> User:
     user = User(telegram_id=telegram_id, identifier=identifier, balance=balance)
     session.add(user)
     return user

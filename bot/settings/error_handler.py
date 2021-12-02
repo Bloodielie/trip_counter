@@ -9,4 +9,4 @@ async def errors_handler(update, exception):
     if isinstance(exception, CancelHandler):
         return None
 
-    logger.exception('Update: %s \n%s', update, exception)
+    logger.exception("Update: %s \n%s", update, exception)

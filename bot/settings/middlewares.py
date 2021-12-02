@@ -1,7 +1,7 @@
 import asyncio
 from asyncio import AbstractEventLoop
 from collections import defaultdict
-from typing import Optional
+from typing import Optional, Dict
 
 from aiogram import types, Bot
 from aiogram.dispatcher.handler import CancelHandler
@@ -57,7 +57,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         self._bot = bot or Bot.get_current()
         self._loop = loop or asyncio.get_running_loop()
 
-        self._users_statistics = defaultdict(int)
+        self._users_statistics: Dict[int, int] = defaultdict(int)
 
         self._loop.call_soon(self.__clear_statistic)
 

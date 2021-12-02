@@ -34,12 +34,7 @@ async def get_auto_params_by_identifier(session: AsyncSession, identifier: str) 
 
 
 async def create_auto(
-    session: AsyncSession,
-    identifier: str,
-    multiplier: float,
-    consumption: float,
-    owner_id: int,
-    fuel_id: int
+    session: AsyncSession, identifier: str, multiplier: float, consumption: float, owner_id: int, fuel_id: int
 ) -> Auto:
     auto = Auto(identifier=identifier, multiplier=multiplier, consumption=consumption, owner=owner_id, fuel=fuel_id)
     session.add(auto)

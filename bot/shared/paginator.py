@@ -26,12 +26,9 @@ class CallBackData:
 def get_pagination_keyboard(
     previous_callback_data: CallBackData, next_callback_data: CallBackData
 ) -> types.InlineKeyboardMarkup:
-    return (
-        types.InlineKeyboardMarkup()
-        .row(
-            types.InlineKeyboardButton("<<", callback_data=json.dumps(asdict(previous_callback_data))),
-            types.InlineKeyboardButton(">>", callback_data=json.dumps(asdict(next_callback_data)))
-        )
+    return types.InlineKeyboardMarkup().row(
+        types.InlineKeyboardButton("<<", callback_data=json.dumps(asdict(previous_callback_data))),
+        types.InlineKeyboardButton(">>", callback_data=json.dumps(asdict(next_callback_data))),
     )
 
 
@@ -45,7 +42,7 @@ class Paginator:
         content_amount_on_page: int,
         get_data_func: GetDataFuncType,
         formatting_func: FormattingFuncType,
-        get_keyboard_func: GetKeyboardFuncType = get_pagination_keyboard
+        get_keyboard_func: GetKeyboardFuncType = get_pagination_keyboard,
     ):
         self._id = id_
         self.next_id = f"{id_}n"
@@ -98,8 +95,8 @@ class Paginator:
             self._formatting_func(user, elements),
             reply_markup=self._get_keyboard_func(
                 CallBackData(id=self.prev_id, offset=offset, max_id=offset),
-                CallBackData(id=self.next_id, offset=offset, max_id=offset)
-            )
+                CallBackData(id=self.next_id, offset=offset, max_id=offset),
+            ),
         )
 
     async def next_callback_query_handler(self, callback_query: types.CallbackQuery, user: User, session: sessionmaker):
@@ -118,7 +115,7 @@ class Paginator:
         await callback_query.message.edit_reply_markup(
             self._get_keyboard_func(
                 CallBackData(id=self.prev_id, offset=offset, max_id=data.max_id),
-                CallBackData(id=self.next_id, offset=offset, max_id=data.max_id)
+                CallBackData(id=self.next_id, offset=offset, max_id=data.max_id),
             )
         )
 
@@ -138,6 +135,6 @@ class Paginator:
         await callback_query.message.edit_reply_markup(
             self._get_keyboard_func(
                 CallBackData(id=self.prev_id, offset=offset, max_id=data.max_id),
-                CallBackData(id=self.next_id, offset=offset, max_id=data.max_id)
+                CallBackData(id=self.next_id, offset=offset, max_id=data.max_id),
             )
         )

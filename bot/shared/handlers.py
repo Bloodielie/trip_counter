@@ -1,9 +1,9 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from bot.shared import text
 from bot.menu.keyboards import menu_keyboard
 from bot.menu.states import States
+from bot.shared import text
 
 
 async def menu_handler(msg: types.Message, state: FSMContext):

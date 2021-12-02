@@ -4,13 +4,13 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from sqlalchemy.orm import sessionmaker
 
-from bot.trip.keyboards import back_keyboard, get_users_menu_keyboard
+import bot.balance.text as balance_text
 from bot.balance.models import Transaction
 from bot.balance.states import AddBalanceStates
-from bot.shared import text
-import bot.balance.text as balance_text
 from bot.menu.keyboards import menu_keyboard
 from bot.menu.states import States
+from bot.shared import text
+from bot.trip.keyboards import back_keyboard, get_users_menu_keyboard
 from bot.user.services.user import get_users, get_user_by_identifier, update_user_balance
 
 
@@ -61,6 +61,8 @@ async def input_amount(msg: types.Message, state: FSMContext, session: sessionma
 
     async with session.begin() as async_session:
         user = await get_user_by_identifier(async_session, selected_user)
+        if user is None:
+            return await msg.answer(balance_text.SELECTED_NON_EXISTENT_USER, reply_markup=menu_keyboard)
 
         transaction = Transaction(amount=amount, receiver=user.id)
         async_session.add(transaction)

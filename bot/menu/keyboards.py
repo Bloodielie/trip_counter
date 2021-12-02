@@ -19,10 +19,7 @@ choice_history_type_keyboard = (
 
 
 def get_trips_pagination_keyboard(previous_callback_data: str = "previous", next_callback_data: str = "next"):
-    return (
-        types.InlineKeyboardMarkup()
-        .row(
-            types.InlineKeyboardButton("<<", callback_data=previous_callback_data),
-            types.InlineKeyboardButton(">>", callback_data=next_callback_data)
-        )
+    return types.InlineKeyboardMarkup().row(
+        types.InlineKeyboardButton("<<", callback_data=previous_callback_data),
+        types.InlineKeyboardButton(">>", callback_data=next_callback_data),
     )

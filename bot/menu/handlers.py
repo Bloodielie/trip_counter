@@ -2,11 +2,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from sqlalchemy.orm import sessionmaker
 
-from bot.balance.services import get_user_balance, get_all_users_balance
-from bot.shared import text
 import bot.menu.text as menu_text
+from bot.balance.services import get_user_balance, get_all_users_balance
 from bot.menu.keyboards import menu_keyboard, choice_history_type_keyboard
 from bot.menu.states import States
+from bot.shared import text
 from bot.user.models import User
 from bot.user.services.invite import get_invite_by_hash
 from bot.user.services.user import create_user
@@ -22,7 +22,7 @@ async def start(msg: types.Message, session: sessionmaker) -> types.Message:
             if invite.invited is not None:
                 return await msg.answer(menu_text.INVITE_ALREADY_ACTIVE)
 
-            user = await create_user(async_session, msg.from_user.id, invite.user_identifier)
+            await create_user(async_session, msg.from_user.id, invite.user_identifier)
 
     await States.menu.set()
     return await msg.answer(menu_text.START, reply_markup=menu_keyboard)

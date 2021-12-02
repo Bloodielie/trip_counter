@@ -1,13 +1,13 @@
+import os
 from distutils.util import strtobool
 from pathlib import Path
 
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-DEBUG = bool(strtobool(os.environ.get("DEBUG")))
+DEBUG = bool(strtobool(os.environ.get("DEBUG", "False")))
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 LIMIT_EVENTS_PER_MIN = 100

@@ -1,4 +1,15 @@
-from sqlalchemy import Column, Integer, DateTime, Table, ForeignKey, Float, String, Numeric, PrimaryKeyConstraint, Boolean
+from sqlalchemy import (
+    Column,
+    Integer,
+    DateTime,
+    Table,
+    ForeignKey,
+    Float,
+    String,
+    Numeric,
+    PrimaryKeyConstraint,
+    Boolean,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -9,7 +20,7 @@ trip_passengers = Table(
     metadata,
     Column("passenger", Integer, ForeignKey("users.id")),
     Column("trip", Integer, ForeignKey("trips.id")),
-    PrimaryKeyConstraint('passenger', 'trip')
+    PrimaryKeyConstraint("passenger", "trip"),
 )
 
 
