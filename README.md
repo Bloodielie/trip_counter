@@ -17,5 +17,11 @@ Start bot:
 python -m bot
 ```
 
+## Docker  
+Create .env, .env.postgres, .env.redis files like examples files.  
+```
+docker-compose up
+```
+
 ## Database structure  
 ![database structure](db_image.png)

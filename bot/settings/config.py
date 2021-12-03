@@ -5,10 +5,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+load_dotenv(".env.redis")
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 DEBUG = bool(strtobool(os.environ.get("DEBUG", "False")))
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
+REDIS_HOST = os.environ.get("REDIS_HOST")
 
 LIMIT_EVENTS_PER_MIN = 100
 

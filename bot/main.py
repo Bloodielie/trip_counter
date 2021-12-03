@@ -3,9 +3,11 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.files import JSONStorage
+from aiogram.contrib.fsm_storage.redis import RedisStorage2
+
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
-from bot.settings.config import BOT_TOKEN, PATH_TO_STATES, DEBUG, LIMIT_EVENTS_PER_MIN
+from bot.settings.config import BOT_TOKEN, PATH_TO_STATES, DEBUG, LIMIT_EVENTS_PER_MIN, REDIS_HOST
 from bot.settings.db import async_session
 from bot.settings.middlewares import InjectMiddleware, AddUserMiddleware, ThrottlingMiddleware
 from bot.settings.routs import setup_routes
@@ -25,7 +27,10 @@ def setup_middlewares(dp: Dispatcher, bot: Bot) -> None:
 def create_dp() -> Dispatcher:
     bot = Bot(token=BOT_TOKEN, parse_mode="Markdown")
 
-    storage = JSONStorage(PATH_TO_STATES)
+    if DEBUG:
+        storage = JSONStorage(PATH_TO_STATES)
+    else:
+        storage = RedisStorage2(REDIS_HOST)
     dp = Dispatcher(bot, storage=storage)
 
     setup_middlewares(dp, bot)

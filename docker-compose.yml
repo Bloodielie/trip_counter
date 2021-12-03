@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13-alpine
+    env_file:
+      - ./.env.postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - "backend"
+    restart: unless-stopped
+
+  redis:
+    image: redis:6.0-alpine
+    restart: unless-stopped
+    env_file:
+      - ./.env.redis
+    volumes:
+      - redis-data:/data
+    networks:
+      - "backend"
+    command: "redis-server"
+
+  bot:
+    build: ./
+    depends_on:
+      - postgres
+      - redis
+    stop_signal: SIGINT
+    env_file:
+      - ./.env
+      - ./.env.redis
+    networks:
+      - "backend"
+    restart: always
+    entrypoint: /start_bot.sh
+
+networks:
+  backend:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.10.0/24
+
+volumes:
+  postgres-data:
+  redis-data:
