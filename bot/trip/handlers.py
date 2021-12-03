@@ -15,7 +15,7 @@ from bot.trip.keyboards import (
 )
 from bot.trip.models import Trip
 from bot.trip.services.auto import get_user_autos, get_auto_params_by_identifier
-from bot.trip.services.trip import get_travel_cost
+from bot.trip.services.trip import get_travel_cost, get_travel_cost_for_user
 from bot.trip.states import TripStates
 from bot.user.models import User
 from bot.user.services.user import get_users, get_users_by_identifiers, update_user_balance
@@ -142,22 +142,26 @@ async def confirm_add_trip(msg: types.Message, state: FSMContext, user: User, se
         if auto_params is None:
             return await msg.answer(trip_text.SELECTED_NON_EXISTENT_AUTO, reply_markup=menu_keyboard)
 
-        travel_cost = get_travel_cost(auto_params.consumption, auto_params.price, auto_params.multiplier, distance)
-        trip_cost = travel_cost / (len(selected_passengers) + 1)
+        travel_cost = get_travel_cost(auto_params.consumption, auto_params.price, distance)
+        trip_cost_for_one_user = get_travel_cost_for_user(
+            travel_cost, len(selected_passengers) + 1, auto_params.multiplier
+        )
 
-        trip = Trip(driver=user.id, distance=distance, auto=auto_params.id, cost=trip_cost)
+        trip = Trip(driver=user.id, distance=distance, auto=auto_params.id, cost=trip_cost_for_one_user)
         for selected_user in selected_users:
             trip.passengers.append(selected_user)
         async_session.add(trip)
 
         for selected_user in selected_users:
-            transaction = Transaction(amount=trip_cost, sender=selected_user.id, receiver=user.id)
-            await update_user_balance(async_session, selected_user.id, -trip_cost)
-            await update_user_balance(async_session, user.id, trip_cost)
+            transaction = Transaction(amount=trip_cost_for_one_user, sender=selected_user.id, receiver=user.id)
+            await update_user_balance(async_session, selected_user.id, -trip_cost_for_one_user)
+            await update_user_balance(async_session, user.id, trip_cost_for_one_user)
             async_session.add(transaction)
 
         await async_session.commit()
 
     await state.set_state(States.menu)
 
-    return await msg.answer(trip_text.CREATED_TRIP.format(trip_cost), parse_mode="Markdown", reply_markup=menu_keyboard)
+    return await msg.answer(
+        trip_text.CREATED_TRIP.format(trip_cost_for_one_user), parse_mode="Markdown", reply_markup=menu_keyboard
+    )

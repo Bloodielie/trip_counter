@@ -10,12 +10,17 @@ from bot.trip.models import Trip, trip_passengers, Auto
 from bot.user.models import User
 
 
-def get_travel_cost(consumption: float, fuel_price: Decimal, multiplier: float, distance: float) -> Decimal:
+def get_travel_cost(consumption: float, fuel_price: Decimal, distance: float) -> Decimal:
     consumption_decimal = Decimal(str(consumption))
     distance_decimal = Decimal(str(distance))
-    multiplier_decimal = Decimal(str(multiplier))
 
-    return ((consumption_decimal / (100 / distance_decimal)) * fuel_price) * multiplier_decimal
+    return (consumption_decimal / (100 / distance_decimal)) * fuel_price
+
+
+def get_travel_cost_for_user(travel_cost: Decimal, users_count: int, multiplier: float) -> Decimal:
+    multiplier = 0 if users_count <= 2 else (multiplier - 1)
+    coefficient = (1 / users_count) + multiplier
+    return travel_cost * Decimal(coefficient)
 
 
 async def get_user_trips(session: AsyncSession, passenger_id: int, limit: int, offset: int) -> List[Trip]:
