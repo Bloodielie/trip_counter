@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 from sqlalchemy import select, or_, desc, true
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from bot.balance.models import Transaction
 from bot.user.models import User
@@ -32,7 +33,8 @@ async def get_user_transactions(
         )
         .order_by(desc(Transaction.id))
         .limit(limit)
-        # .offset(offset)
+        .options(joinedload(Transaction.sender_obj))
+        .options(joinedload(Transaction.receiver_obj))
     )
     result = await session.execute(query)
     return result.scalars().all()
