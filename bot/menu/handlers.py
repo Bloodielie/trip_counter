@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 import bot.menu.text as menu_text
@@ -22,7 +23,10 @@ async def start(msg: types.Message, session: sessionmaker) -> types.Message:
             if invite.invited is not None:
                 return await msg.answer(menu_text.INVITE_ALREADY_ACTIVE)
 
-            await create_user(async_session, msg.from_user.id, invite.user_identifier)
+            try:
+                await create_user(async_session, msg.from_user.id, invite.user_identifier)
+            except IntegrityError:
+                return await msg.answer(menu_text.USER_ALREADY_IN_DB)
 
     await States.menu.set()
     return await msg.answer(menu_text.START, reply_markup=menu_keyboard)

@@ -15,3 +15,4 @@ USER_TRIP = """*Поездка: *
 """
 NO_DATA = "Данные отсутствуют."
 INVITE_ALREADY_ACTIVE = "Инвайт уже активирован."
+USER_ALREADY_IN_DB = "Аккаунт для вас уже создан."
