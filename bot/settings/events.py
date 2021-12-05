@@ -1,7 +1,7 @@
 from decimal import Decimal
-from typing import Optional
 
-from aiogram import Dispatcher
+from aiogram import Dispatcher, Bot
+from aiogram.types import BotCommand, BotCommandScopeDefault
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.settings.config import (
@@ -70,7 +70,27 @@ async def create_autos(session: AsyncSession, owner: User) -> None:
         await session.flush()
 
 
-async def on_startup(_: Dispatcher):
+async def set_bot_commands(bot: Bot) -> None:
+    data = [
+        (
+            [
+                BotCommand(command="start", description="Start work with bot."),
+                BotCommand(command="menu", description="Come back to menu."),
+                BotCommand(command="create_trip", description="Creating a trip by the driver."),
+                BotCommand(command="add_balance", description="Add balance to user."),
+                BotCommand(command="create_invite", description="Create an invite link.")
+            ],
+            BotCommandScopeDefault(),
+            None
+        )
+    ]
+    for commands_list, commands_scope, language in data:
+        await bot.set_my_commands(commands=commands_list, scope=commands_scope, language_code=language)
+
+
+async def on_startup(dp: Dispatcher):
+    await set_bot_commands(dp.bot)
+
     async with engine.begin() as conn:
         if DEBUG:
             # await conn.run_sync(Base.metadata.drop_all)

@@ -20,7 +20,7 @@ def setup_commands_routs(dp: Dispatcher) -> None:
     dp.register_message_handler(
         start_creating_trip,
         RoleFilter(["admin", "driver"]),
-        commands=["add_trip"],
+        commands=["create_trip"],
         state="*",
     )
 

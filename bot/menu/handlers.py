@@ -16,17 +16,17 @@ from bot.user.services.user import create_user
 async def start(msg: types.Message, session: sessionmaker) -> types.Message:
     _, _, hash_ = msg.text.partition(" ")
     if hash_:
-        async with session.begin() as async_session:
-            invite = await get_invite_by_hash(async_session, hash_)
-            if invite is None:
-                return await msg.answer(text.PERMISSION_ERROR)
-            if invite.invited is not None:
-                return await msg.answer(menu_text.INVITE_ALREADY_ACTIVE)
+        try:
+            async with session.begin() as async_session:
+                invite = await get_invite_by_hash(async_session, hash_)
+                if invite is None:
+                    return await msg.answer(text.PERMISSION_ERROR)
+                if invite.invited is not None:
+                    return await msg.answer(menu_text.INVITE_ALREADY_ACTIVE)
 
-            try:
                 await create_user(async_session, msg.from_user.id, invite.user_identifier)
-            except IntegrityError:
-                return await msg.answer(menu_text.USER_ALREADY_IN_DB)
+        except IntegrityError:
+            return await msg.answer(menu_text.USER_ALREADY_IN_DB)
 
     await States.menu.set()
     return await msg.answer(menu_text.START, reply_markup=menu_keyboard)
