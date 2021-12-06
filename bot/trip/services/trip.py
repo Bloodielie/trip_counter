@@ -18,8 +18,7 @@ def get_travel_cost(consumption: float, fuel_price: Decimal, distance: float) ->
 
 
 def get_travel_cost_for_user(travel_cost: Decimal, users_count: int, multiplier: float) -> Decimal:
-    multiplier = 0 if users_count <= 2 else (multiplier - 1)
-    coefficient = (1 / users_count) + multiplier
+    coefficient = (1 / users_count) + (multiplier - 1)
     return travel_cost * Decimal(coefficient)
 
 

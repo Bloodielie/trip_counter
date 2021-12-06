@@ -5,3 +5,4 @@ asyncpg~=0.24.0
 alembic~=1.7.5
 aioredis~=2.0.0
 pymorphy2~=0.9.1
+pytz==2021.1

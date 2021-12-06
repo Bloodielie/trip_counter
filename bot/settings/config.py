@@ -3,6 +3,7 @@ from distutils.util import strtobool
 from pathlib import Path
 
 from dotenv import load_dotenv
+import pytz
 
 load_dotenv()
 load_dotenv(".env.redis")
@@ -13,6 +14,7 @@ DEBUG = bool(strtobool(os.environ.get("DEBUG", "False")))
 DATABASE_URL = os.environ.get("DATABASE_URL")
 REDIS_HOST = os.environ.get("REDIS_HOST")
 
+DEFAULT_TZ = pytz.timezone("Europe/Minsk")
 LIMIT_EVENTS_PER_MIN = 100
 
 PATH_TO_STATES = os.path.join(Path(__file__).parent.parent.parent, "user_states.json")
