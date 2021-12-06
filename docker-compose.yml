@@ -38,10 +38,10 @@ services:
 
 networks:
   backend:
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.0.10.0/24
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 10.0.10.0/24
 
 volumes:
   postgres-data:
